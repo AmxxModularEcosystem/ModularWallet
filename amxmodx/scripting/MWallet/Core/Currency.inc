@@ -127,7 +127,7 @@ bool:Currency_Credit(const T_Currency:iCurrency, const UserId, const Float:fAmou
     new Currency[S_Currency]; 
     Currency_GetById(iCurrency, Currency);
 
-    Currency_CallOrDefault(Currency, Currency_OnIsEnough, [UserId, fAmount]) {
+    Currency_CallOrDefault(Currency, Currency_OnCredit, [UserId, fAmount]) {
         if (Currency_IsEnough(iCurrency, UserId, fAmount)) {
             return false;
         } else {
@@ -142,7 +142,7 @@ bool:Currency_Debit(const T_Currency:iCurrency, const UserId, const Float:fAmoun
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
-    Currency_CallOrDefault(Currency, Currency_OnIsEnough, [UserId, fAmount]) {
+    Currency_CallOrDefault(Currency, Currency_OnDebit, [UserId, fAmount]) {
         return Currency_Set(iCurrency, UserId, Currency_Get(iCurrency, UserId) + fAmount);
     }
 

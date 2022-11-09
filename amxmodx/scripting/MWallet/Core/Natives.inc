@@ -9,10 +9,24 @@
 #include "MWallet/Core/Currency"
 
 T_Currency:get_param_currency(const iArg) {
-    new T_Currency:iCurrency = T_Currency:get_param(iArg);
-    assert iCurrency > Invalid_Currency && _:iCurrency < Currency_Count();
-    return iCurrency;
+    return T_Currency:get_param(iArg);
 }
+
+#define ValidateCurrencyParam(%1,%2) CompositeMacros( \
+    new T_Currency:__iCurrency = get_param_currency(%1); \
+    if (__iCurrency <= Invalid_Currency || _:__iCurrency >= Currency_Count()) { \
+        log_error(0, "Invalid currency handler (%d).", __iCurrency); \
+        return %2; \
+    } \
+)
+
+#define ValidateUserParam(%1,%2) CompositeMacros( \
+    new __UserId = get_param(%1); \
+    if (!is_user_connected(__UserId)) { \
+        log_error(0, "Invalid player index (%d).", __UserId); \
+        return %2; \
+    } \
+)
 
 public plugin_natives() {
     Natives_Init(MWALLET_PREFIX);
@@ -59,6 +73,8 @@ T_Currency:@_Currency_Find() {
 @_Currency_AddListener(const iPlugin) {
     enum {Arg_iCurrency = 1, Arg_iEvent, Arg_sCallback}
 
+    ValidateCurrencyParam(Arg_iCurrency, );
+
     new T_Currency:iCurrency = T_Currency:get_param(Arg_iCurrency);
     new E_CurrencyEvents:iEvent = E_CurrencyEvents:get_param(Arg_iEvent);
 
@@ -71,6 +87,9 @@ T_Currency:@_Currency_Find() {
 Float:@_Currency_Get() {
     enum {Arg_iCurrency = 1, Arg_UserId}
 
+    ValidateCurrencyParam(Arg_iCurrency, 0.0);
+    ValidateUserParam(Arg_UserId, 0.0);
+
     return Currency_Get(
         get_param_currency(Arg_iCurrency),
         get_param(Arg_UserId)
@@ -79,6 +98,9 @@ Float:@_Currency_Get() {
 
 bool:@_Currency_Set() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
+
+    ValidateCurrencyParam(Arg_iCurrency, false);
+    ValidateUserParam(Arg_UserId, false);
 
     return Currency_Set(
         get_param_currency(Arg_iCurrency),
@@ -90,6 +112,9 @@ bool:@_Currency_Set() {
 bool:@_Currency_IsEnough() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
 
+    ValidateCurrencyParam(Arg_iCurrency, false);
+    ValidateUserParam(Arg_UserId, false);
+
     return Currency_IsEnough(
         get_param_currency(Arg_iCurrency),
         get_param(Arg_UserId),
@@ -100,6 +125,9 @@ bool:@_Currency_IsEnough() {
 bool:@_Currency_Credit() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
 
+    ValidateCurrencyParam(Arg_iCurrency, false);
+    ValidateUserParam(Arg_UserId, false);
+
     return Currency_Credit(
         get_param_currency(Arg_iCurrency),
         get_param(Arg_UserId),
@@ -109,6 +137,9 @@ bool:@_Currency_Credit() {
 
 bool:@_Currency_Debit() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
+
+    ValidateCurrencyParam(Arg_iCurrency, false);
+    ValidateUserParam(Arg_UserId, false);
 
     return Currency_Debit(
         get_param_currency(Arg_iCurrency),

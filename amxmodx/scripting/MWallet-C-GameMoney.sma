@@ -2,6 +2,7 @@
 #include <reapi>
 #include <ModularWallet>
 #include "MWallet/Utils"
+#include "MWallet/DebugMode"
 
 #pragma semicolon 1
 #pragma compress 1
@@ -26,28 +27,34 @@ public MWallet_OnInit() {
 }
 
 Float:@OnGet(const UserId) {
+    Dbg_Log("@OnGet(%n): %.0f", UserId, float(get_member(UserId, m_iAccount)));
     return float(get_member(UserId, m_iAccount));
 }
 
 bool:@OnSet(const UserId, const Float:fAmount) {
     if (fAmount < 0) {
+        Dbg_Log("@OnSet(%n, %.0f): false", UserId, fAmount);
         return false;
     }
     
     rg_add_account(UserId, floatround(fAmount), AS_SET);
+    Dbg_Log("@OnSet(%n, %.0f): true", UserId, fAmount);
     return true;
 }
 
 bool:@OnDebit(const UserId, const Float:fAmount) {
     rg_add_account(UserId, floatround(fAmount), AS_ADD);
+    Dbg_Log("@OnDebit(%n, %.0f): true", UserId, fAmount);
     return true;
 }
 
 bool:@OnCredit(const UserId, const Float:fAmount) {
     if (@OnGet(UserId) < fAmount) {
+        Dbg_Log("@OnCredit(%n, %.0f): false", UserId, fAmount);
         return false;
     }
 
     rg_add_account(UserId, -floatround(fAmount), AS_ADD);
+    Dbg_Log("@OnCredit(%n, %.0f): true", UserId, fAmount);
     return true;
 }
