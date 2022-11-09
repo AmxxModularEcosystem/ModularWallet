@@ -45,13 +45,13 @@ T_Currency:@_Currency_Create() {
 }
 
 T_Currency:@_Currency_Find() {
-    enum {Arg_sName = 1, Arg_bOrFail}
+    enum {Arg_sName = 1, Arg_bOrError}
 
     new sName[MWALLET_CURRENCY_MAX_NAME_LEN];
     get_string(Arg_sName, sName, charsmax(sName));
-    new bool:bOrFail = bool:get_param(Arg_bOrFail);
+    new bool:bOrError = bool:get_param(Arg_bOrError);
 
-    return bOrFail
+    return bOrError
         ? Currency_FindOrError(sName)
         : Currency_Find(sName);
 }

@@ -6,7 +6,7 @@
 #pragma semicolon 1
 #pragma compress 1
 
-public stock const PluginName[] = "[MWallet] Game Money";
+public stock const PluginName[] = "[MWallet-C] Game Money";
 public stock const PluginVersion[] = _MWALLET_VERSION;
 public stock const PluginAuthor[] = "ArKaNeMaN";
 public stock const PluginURL[] = "t.me/arkaneman";
