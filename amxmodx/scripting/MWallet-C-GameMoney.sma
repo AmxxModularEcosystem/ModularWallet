@@ -16,7 +16,7 @@ public stock const PluginDescription[] = "Game money currency for Modular Wallet
 public MWallet_OnInit() {
     RegisterPluginByVars();
 
-    new T_Currency:iCurrency = MWallet_Currency_Create("GameMoney");
+    new T_Currency:iCurrency = MWallet_Currency_Create("GameMoney", "$%.0f");
     MWallet_Currency_AddListener(iCurrency, Currency_OnGet, "@OnGet");
     MWallet_Currency_AddListener(iCurrency, Currency_OnSet, "@OnSet");
     MWallet_Currency_AddListener(iCurrency, Currency_OnDebit, "@OnDebit");

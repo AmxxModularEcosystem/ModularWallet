@@ -1,13 +1,20 @@
 #include <amxmodx>
 #include <ModularWallet>
 #include "MWallet/Utils"
+#include "MWallet/DebugMode"
 
-new const __TestPrint_template[] = "[MWallet-Test] %s => %.0f (#%d)";
+new const __TestPrint_template[] = "[MWallet-Test] %s => %s (#%d)";
 #define TestPrint(%1,%2) \
-    client_print(%1, print_console, __TestPrint_template, fmt(%2), GetUserBalance(UserId), g_iUserSelectedCurrency[UserId])
+    client_print(%1, print_console, __TestPrint_template, fmt(%2), GetUserBalanceFmt(%1), g_iUserSelectedCurrency[%1])
 
 #define GetUserBalance(%1) \
-    MWallet_Currency_Get(g_iUserSelectedCurrency[UserId], UserId)
+    MWallet_Currency_Get(g_iUserSelectedCurrency[%1], %1)
+
+#define GetUserFormat(%1,%2) \
+    MWallet_Currency_Fmt(g_iUserSelectedCurrency[%1], %2)
+
+#define GetUserBalanceFmt(%1) \
+    GetUserFormat(%1, GetUserBalance(%1))
 
 #pragma semicolon 1
 #pragma compress 1
@@ -45,41 +52,41 @@ public MWallet_OnInited() {
 }
 
 @Cmd_Get(const UserId) {
-    TestPrint(UserId, "Get", GetUserBalance(UserId));
+    TestPrint(UserId, "Get");
 }
 
 @Cmd_Set(const UserId) {
     new Float:fAmount = read_argv_float(1);
     if (MWallet_Currency_Set(g_iUserSelectedCurrency[UserId], UserId, fAmount)) {
-        TestPrint(UserId, "Set %.0f", fAmount);
+        TestPrint(UserId, "Set %.0f", GetUserFormat(UserId, fAmount));
     } else {
-        TestPrint(UserId, "Can`t Set %.0f", fAmount);
+        TestPrint(UserId, "Can`t Set %.0f", GetUserFormat(UserId, fAmount));
     }
 }
 
 @Cmd_Credit(const UserId) {
     new Float:fAmount = read_argv_float(1);
     if (MWallet_Currency_Credit(g_iUserSelectedCurrency[UserId], UserId, fAmount)) {
-        TestPrint(UserId, "Credit %.0f", fAmount);
+        TestPrint(UserId, "Credit %.0f", GetUserFormat(UserId, fAmount));
     } else {
-        TestPrint(UserId, "Can`t Credit %.0f", fAmount);
+        TestPrint(UserId, "Can`t Credit %.0f", GetUserFormat(UserId, fAmount));
     }
 }
 
 @Cmd_Debit(const UserId) {
     new Float:fAmount = read_argv_float(1);
     if (MWallet_Currency_Debit(g_iUserSelectedCurrency[UserId], UserId, fAmount)) {
-        TestPrint(UserId, "Debit %.0f", fAmount);
+        TestPrint(UserId, "Debit %.0f", GetUserFormat(UserId, fAmount));
     } else {
-        TestPrint(UserId, "Can`t Debit %.0f", fAmount);
+        TestPrint(UserId, "Can`t Debit %.0f", GetUserFormat(UserId, fAmount));
     }
 }
 
 @Cmd_Enough(const UserId) {
     new Float:fAmount = read_argv_float(1);
     if (MWallet_Currency_IsEnough(g_iUserSelectedCurrency[UserId], UserId, fAmount)) {
-        TestPrint(UserId, "Enough %.0f", fAmount);
+        TestPrint(UserId, "Enough %.0f", GetUserFormat(UserId, fAmount));
     } else {
-        TestPrint(UserId, "Not Enough %.0f", fAmount);
+        TestPrint(UserId, "Not Enough %.0f", GetUserFormat(UserId, fAmount));
     }
 }

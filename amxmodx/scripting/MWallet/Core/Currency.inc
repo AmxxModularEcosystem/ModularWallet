@@ -13,6 +13,7 @@
 
 enum _:S_Currency {
     Currency_Name[MWALLET_CURRENCY_MAX_NAME_LEN],
+    Currency_FormatRule[MWALLET_CURRENCY_MAX_FORMAT_LEN],
     T_Events:Currency_Events,
 }
 
@@ -46,10 +47,11 @@ Currency_Count() {
     return ArrayMapSize(gCurrencies);
 }
 
-T_Currency:Currency_Create(const sName[]) {
+T_Currency:Currency_Create(const sName[], const sFormat[] = "") {
     new Currency[S_Currency];
     
     copy(Currency[Currency_Name], charsmax(Currency[Currency_Name]), sName);
+    copy(Currency[Currency_FormatRule], charsmax(Currency[Currency_FormatRule]), sFormat[0] ? sFormat : MWALLET_CURRENCY_DEFAULT_FORMAT);
     Currency[Currency_Events] = Events_Init(E_CurrencyEvents);
 
     return T_Currency:ArrayMapPushArray(gCurrencies, Currency, Currency[Currency_Name]);
@@ -92,6 +94,13 @@ bool:Currency_AddListener(
     }
 
     Events_PushListener(Currency[Currency_Events], iEvent, iListener);
+}
+
+Currency_Format(const T_Currency:iCurrency, const Float:fAmount, sOut[], const iOutLen) {
+    new Currency[S_Currency];
+    Currency_GetById(iCurrency, Currency);
+    
+    return formatex(sOut, iOutLen, Currency[Currency_FormatRule], fAmount);
 }
 
 Float:Currency_Get(const T_Currency:iCurrency, const UserId) {

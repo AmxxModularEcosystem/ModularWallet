@@ -35,6 +35,7 @@ public plugin_natives() {
     Natives_Reg("Currency_Create");
     Natives_Reg("Currency_AddListener");
 
+    Natives_Reg("Currency_Format");
     Natives_Reg("Currency_Find");
     Natives_Reg("Currency_AddListener");
 
@@ -50,12 +51,15 @@ public plugin_natives() {
 }
 
 T_Currency:@_Currency_Create() {
-    enum {Arg_sName = 1}
+    enum {Arg_sName = 1, Arg_sFormat}
 
     new sName[MWALLET_CURRENCY_MAX_NAME_LEN];
     get_string(Arg_sName, sName, charsmax(sName));
 
-    return Currency_Create(sName);
+    new sFormat[MWALLET_CURRENCY_MAX_FORMAT_LEN];
+    get_string(Arg_sFormat, sFormat, charsmax(sFormat));
+
+    return Currency_Create(sName, sFormat);
 }
 
 T_Currency:@_Currency_Find() {
@@ -63,6 +67,7 @@ T_Currency:@_Currency_Find() {
 
     new sName[MWALLET_CURRENCY_MAX_NAME_LEN];
     get_string(Arg_sName, sName, charsmax(sName));
+
     new bool:bOrError = bool:get_param(Arg_bOrError);
 
     return bOrError
@@ -82,6 +87,22 @@ T_Currency:@_Currency_Find() {
     get_string(Arg_sCallback, sCallback, charsmax(sCallback));
 
     Currency_AddListener(iCurrency, iEvent, iPlugin, sCallback);
+}
+
+@_Currency_Format() {
+    enum {Arg_iCurrency = 1, Arg_fAmount, Arg_sOut, Arg_iOutLen}
+
+    ValidateCurrencyParam(Arg_iCurrency, 0);
+
+    new T_Currency:iCurrency = T_Currency:get_param(Arg_iCurrency);
+    new Float:fAmount = get_param_f(Arg_fAmount);
+    new iOutLen = get_param(Arg_iOutLen);
+
+    new sFmt[MWALLET_CURRENCY_MAX_FORMAT_OUT_LEN];
+    Currency_Format(iCurrency, fAmount, sFmt, charsmax(sFmt));
+    Dbg_Log("@_Currency_Format(%d, %.0f): sFmt = %s", iCurrency, fAmount, sFmt);
+
+    return set_string(Arg_sOut, sFmt, iOutLen);
 }
 
 Float:@_Currency_Get() {
