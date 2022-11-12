@@ -30,19 +30,65 @@ enum T_Currency { Invalid_Currency = -1 }
             Set(UserId, Get(UserId) + fAmount);
 */
 enum E_CurrencyEvents {
-    // Float:(const UserId)
+    /**
+     * Вызывается при получении актуального количества валюты игрока.
+     *
+     * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
+     *
+     * @note            Float:(const UserId)
+     * @note            Обязательно должно быть обработано.
+     *
+     * @return          Текущее количество валюты в виде дробного числа.
+     */
     Currency_OnGet,
 
-    // bool:(const UserId, const Float:fAmount)
+    /**
+     * Вызывается при установке количества валюты игрока.
+     *
+     * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
+     * @param fAmount   Новое количество валюты.
+     *
+     * @note            bool:(const UserId, const Float:fAmount)
+     * @note            Обязательно должно быть обработано.
+     *
+     * @return          true, если значение успешно установлено, иначе false.
+     */
     Currency_OnSet,
 
-    // bool:(const UserId, const Float:fAmount)
+    /**
+     * Вызывается при проверке достаточности количества валюты игрока.
+     *
+     * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
+     * @param fAmount   Новое количество валюты.
+     *
+     * @note            bool:(const UserId, const Float:fAmount)
+     *
+     * @return          true, если валюты достаточно, иначе false.
+     */
     Currency_OnIsEnough,
 
-    // bool:(const UserId, const Float:fAmount)
+    /**
+     * Вызывается при списании валюты у игрока.
+     *
+     * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
+     * @param fAmount   Списываемое количество валюты.
+     *
+     * @note            bool:(const UserId, const Float:fAmount)
+     *
+     * @return          true, если валюта успешно списана, иначе false.
+     */
     Currency_OnCredit,
 
-    // bool:(const UserId, const Float:fAmount)
+    /**
+     * Вызывается при начислении валюты игроку.
+     *
+     * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
+     * @param fAmount   Начисляемое количество валюты.
+     *
+     * @note            bool:(const UserId, const Float:fAmount)
+     *
+     * @return          true, если валюта успешно начислена, иначе false.
+     */
     Currency_OnDebit,
 }
 
@@ -158,6 +204,7 @@ native Float:MWallet_Currency_Get(const T_Currency:iCurrency, const UserId);
  * @param fAmount   Количество валюты.
  *
  * @note            Вызывает событие Currency_OnSet.
+ * @note            Для списания/начисления валюты следует использовать специальные нативы.
  *
  * @error           Будет выброшена ошибка, если передан невалидный индекс игрока или невалидный хендлер валюты.
  *
