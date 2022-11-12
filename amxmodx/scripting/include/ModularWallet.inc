@@ -3,7 +3,7 @@
 #endif
 #define __modular_wallet_included
 
-#define _MWALLET_VERSION "1.0.0-alpha"
+#define _MWALLET_VERSION "1.0.0-beta.1"
 stock const MWALLET_VERSION[] = _MWALLET_VERSION;
 stock const MWALLET_PREFIX[] = "MWallet";
 
