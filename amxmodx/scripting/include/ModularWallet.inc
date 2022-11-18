@@ -35,7 +35,9 @@ enum E_CurrencyEvents {
      *
      * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
      *
-     * @note            Float:(const UserId)
+     * @note            Сигнатура обработчика:
+     *                  Float:(const UserId)
+     *
      * @note            Обязательно должно быть обработано.
      *
      * @return          Текущее количество валюты в виде дробного числа.
@@ -48,7 +50,9 @@ enum E_CurrencyEvents {
      * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
      * @param fAmount   Новое количество валюты.
      *
-     * @note            bool:(const UserId, const Float:fAmount)
+     * @note            Сигнатура обработчика:
+     *                  bool:(const UserId, const Float:fAmount)
+     *
      * @note            Обязательно должно быть обработано.
      *
      * @return          true, если значение успешно установлено, иначе false.
@@ -61,7 +65,8 @@ enum E_CurrencyEvents {
      * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
      * @param fAmount   Новое количество валюты.
      *
-     * @note            bool:(const UserId, const Float:fAmount)
+     * @note            Сигнатура обработчика:
+     *                  bool:(const UserId, const Float:fAmount)
      *
      * @return          true, если валюты достаточно, иначе false.
      */
@@ -73,7 +78,8 @@ enum E_CurrencyEvents {
      * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
      * @param fAmount   Списываемое количество валюты.
      *
-     * @note            bool:(const UserId, const Float:fAmount)
+     * @note            Сигнатура обработчика:
+     *                  bool:(const UserId, const Float:fAmount)
      *
      * @return          true, если валюта успешно списана, иначе false.
      */
@@ -85,7 +91,8 @@ enum E_CurrencyEvents {
      * @param UserId    Индекс игрока, для которого запрашивается количество валюты.
      * @param fAmount   Начисляемое количество валюты.
      *
-     * @note            bool:(const UserId, const Float:fAmount)
+     * @note            Сигнатура обработчика:
+     *                  bool:(const UserId, const Float:fAmount)
      *
      * @return          true, если валюта успешно начислена, иначе false.
      */
