@@ -3,6 +3,9 @@
 #endif
 #define __modular_wallet_included
 
+#include <amxmodx>
+#include <json>
+
 #define _MWALLET_VERSION "1.0.0-beta.1"
 stock const MWALLET_VERSION[] = _MWALLET_VERSION;
 stock const MWALLET_PREFIX[] = "MWallet";
@@ -263,3 +266,47 @@ native bool:MWallet_Currency_Credit(const T_Currency:iCurrency, const UserId, co
  * @return          true, если операция выполнена успешно, иначе false.
  */
 native bool:MWallet_Currency_Debit(const T_Currency:iCurrency, const UserId, const Float:fAmount);
+
+/**
+ * Получает название из JSON-значения и ищет по нему валюту.
+ *
+ * @param jValue    JSON-значение.
+ * @param bFree     Надо ли очистить JSON-значение после использования.
+ *
+ * @return          Хендлер найденной валюты или Invalid_Currency, если валюта не найдена.
+ */
+stock T_Currrency:MWallet_JsonGetCurrency(const JSON:jValue, const bool:bFree = false) {
+    new sCurrencyName[MWALLET_CURRENCY_MAX_NAME_LEN];
+    json_get_string(jValue, sCurrencyName, charsmax(sCurrencyNames));
+
+    if (bFree) {
+        json_free(jValue);
+    }
+
+    return MWallet_Currency_Find(sCurrencyName);
+}
+
+/**
+ * Получает название из JSON-обьекта и ищет по нему валюту.
+ *
+ * @param jObject   JSON-обьект.
+ * @param sKey      Строковый ключ.
+ * @param bDotNot   Использовать ли доступ к полям через точку.
+ *
+ * @return          Хендлер найденной валюты или Invalid_Currency, если валюта не найдена.
+ */
+stock T_Currrency:MWallet_JsonObjectGetCurrency(const JSON:jObject, const sKey[], const bool:bDotNot = false) {
+    return MWallet_Json_GetCurrency(json_object_get_value(jObject, sKey, bDotNot), true);
+}
+
+/**
+ * Получает название из JSON-массива и ищет по нему валюту.
+ *
+ * @param jArray    JSON-обьект.
+ * @param Index     Индекс элемента.
+ *
+ * @return          Хендлер найденной валюты или Invalid_Currency, если валюта не найдена.
+ */
+stock T_Currrency:MWallet_JsonArrayGetCurrency(const JSON:jArray, const Index) {
+    return MWallet_Json_GetCurrency(json_array_get_value(jArray, Index), true);
+}
