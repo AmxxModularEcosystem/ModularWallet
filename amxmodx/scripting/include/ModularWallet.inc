@@ -296,7 +296,7 @@ stock T_Currrency:MWallet_JsonGetCurrency(const JSON:jValue, const bool:bFree = 
  * @return          Хендлер найденной валюты или Invalid_Currency, если валюта не найдена.
  */
 stock T_Currrency:MWallet_JsonObjectGetCurrency(const JSON:jObject, const sKey[], const bool:bDotNot = false) {
-    return MWallet_Json_GetCurrency(json_object_get_value(jObject, sKey, bDotNot), true);
+    return MWallet_JsonGetCurrency(json_object_get_value(jObject, sKey, bDotNot), true);
 }
 
 /**
@@ -308,5 +308,5 @@ stock T_Currrency:MWallet_JsonObjectGetCurrency(const JSON:jObject, const sKey[]
  * @return          Хендлер найденной валюты или Invalid_Currency, если валюта не найдена.
  */
 stock T_Currrency:MWallet_JsonArrayGetCurrency(const JSON:jArray, const Index) {
-    return MWallet_Json_GetCurrency(json_array_get_value(jArray, Index), true);
+    return MWallet_JsonGetCurrency(json_array_get_value(jArray, Index), true);
 }
