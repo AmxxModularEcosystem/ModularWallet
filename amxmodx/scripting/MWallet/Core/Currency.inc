@@ -91,9 +91,11 @@ bool:Currency_AddListener(
 
     if (iListener < 0) {
         log_error(0, "Can`t create forward for function '%s' in plugin #%d.", sCallback, iPlugin);
+        return false;
     }
 
     Events_PushListener(Currency[Currency_Events], iEvent, iListener);
+    return true;
 }
 
 Currency_Format(const T_Currency:iCurrency, const Float:fAmount, sOut[], const iOutLen) {
@@ -103,7 +105,7 @@ Currency_Format(const T_Currency:iCurrency, const Float:fAmount, sOut[], const i
     return formatex(sOut, iOutLen, Currency[Currency_FormatRule], fAmount);
 }
 
-Float:Currency_Get(const T_Currency:iCurrency, const UserId) {
+Float:Currency_OpGet(const T_Currency:iCurrency, const UserId) {
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
@@ -112,7 +114,7 @@ Float:Currency_Get(const T_Currency:iCurrency, const UserId) {
     return Events_GetReturnedValue();
 }
 
-bool:Currency_Set(const T_Currency:iCurrency, const UserId, const Float:fAmount) {
+bool:Currency_OpSet(const T_Currency:iCurrency, const UserId, const Float:fAmount) {
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
@@ -121,38 +123,38 @@ bool:Currency_Set(const T_Currency:iCurrency, const UserId, const Float:fAmount)
     return Events_GetReturnedValue();
 }
 
-bool:Currency_IsEnough(const T_Currency:iCurrency, const UserId, const Float:fAmount) {
+bool:Currency_OpIsEnough(const T_Currency:iCurrency, const UserId, const Float:fAmount) {
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
     Currency_CallOrDefault(Currency, Currency_OnIsEnough, [UserId, fAmount]) {
-        return Currency_Get(iCurrency, UserId) >= fAmount;
+        return Currency_OpGet(iCurrency, UserId) >= fAmount;
     }
 
     return Events_GetReturnedValue();
 }
 
-bool:Currency_Credit(const T_Currency:iCurrency, const UserId, const Float:fAmount) {
+bool:Currency_OpCredit(const T_Currency:iCurrency, const UserId, const Float:fAmount) {
     new Currency[S_Currency]; 
     Currency_GetById(iCurrency, Currency);
 
     Currency_CallOrDefault(Currency, Currency_OnCredit, [UserId, fAmount]) {
-        if (Currency_IsEnough(iCurrency, UserId, fAmount)) {
+        if (!Currency_OpIsEnough(iCurrency, UserId, fAmount)) {
             return false;
         } else {
-            return Currency_Set(iCurrency, UserId, Currency_Get(iCurrency, UserId) - fAmount);
+            return Currency_OpSet(iCurrency, UserId, Currency_OpGet(iCurrency, UserId) - fAmount);
         }
     }
 
     return Events_GetReturnedValue();
 }
 
-bool:Currency_Debit(const T_Currency:iCurrency, const UserId, const Float:fAmount) {
+bool:Currency_OpDebit(const T_Currency:iCurrency, const UserId, const Float:fAmount) {
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
     Currency_CallOrDefault(Currency, Currency_OnDebit, [UserId, fAmount]) {
-        return Currency_Set(iCurrency, UserId, Currency_Get(iCurrency, UserId) + fAmount);
+        return Currency_OpSet(iCurrency, UserId, Currency_OpGet(iCurrency, UserId) + fAmount);
     }
 
     return Events_GetReturnedValue();

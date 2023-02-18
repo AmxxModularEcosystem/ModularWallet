@@ -28,6 +28,14 @@ T_Currency:get_param_currency(const iArg) {
     } \
 )
 
+#define ValidatePosNumParam(%1,%2) CompositeMacros( \
+    new __iNum = get_param(%1); \
+    if (__iNum <= 0) { \
+        log_error(0, "Param #%d must be a positive number (%d).", %1, __iNum); \
+        return %2; \
+    } \
+)
+
 public plugin_natives() {
     Natives_Init(MWALLET_PREFIX);
 
@@ -35,9 +43,9 @@ public plugin_natives() {
     Natives_Reg("Currency_Create");
     Natives_Reg("Currency_AddListener");
 
+    Natives_Reg("Currency_GetName");
     Natives_Reg("Currency_Format");
     Natives_Reg("Currency_Find");
-    Natives_Reg("Currency_AddListener");
 
     Natives_Reg("Currency_Get");
     Natives_Reg("Currency_Set");
@@ -62,19 +70,6 @@ T_Currency:@_Currency_Create() {
     return Currency_Create(sName, sFormat);
 }
 
-T_Currency:@_Currency_Find() {
-    enum {Arg_sName = 1, Arg_bOrError}
-
-    new sName[MWALLET_CURRENCY_MAX_NAME_LEN];
-    get_string(Arg_sName, sName, charsmax(sName));
-
-    new bool:bOrError = bool:get_param(Arg_bOrError);
-
-    return bOrError
-        ? Currency_FindOrError(sName)
-        : Currency_Find(sName);
-}
-
 @_Currency_AddListener(const iPlugin) {
     enum {Arg_iCurrency = 1, Arg_iEvent, Arg_sCallback}
 
@@ -87,6 +82,20 @@ T_Currency:@_Currency_Find() {
     get_string(Arg_sCallback, sCallback, charsmax(sCallback));
 
     Currency_AddListener(iCurrency, iEvent, iPlugin, sCallback);
+}
+
+@_Currency_GetName() {
+    enum {Arg_iCurrency = 1, Arg_sOut, Arg_iOutLen}
+
+    ValidateCurrencyParam(Arg_iCurrency, 0);
+
+    new T_Currency:iCurrency = T_Currency:get_param(Arg_iCurrency);
+    new iOutLen = get_param(Arg_iOutLen);
+    
+    new Currency[S_Currency];
+    Currency_GetById(iCurrency, Currency);
+
+    return set_string(Arg_sOut, Currency[Currency_Name], iOutLen);
 }
 
 @_Currency_Format() {
@@ -105,13 +114,26 @@ T_Currency:@_Currency_Find() {
     return set_string(Arg_sOut, sFmt, iOutLen);
 }
 
+T_Currency:@_Currency_Find() {
+    enum {Arg_sName = 1, Arg_bOrError}
+
+    new sName[MWALLET_CURRENCY_MAX_NAME_LEN];
+    get_string(Arg_sName, sName, charsmax(sName));
+
+    new bool:bOrError = bool:get_param(Arg_bOrError);
+
+    return bOrError
+        ? Currency_FindOrError(sName)
+        : Currency_Find(sName);
+}
+
 Float:@_Currency_Get() {
     enum {Arg_iCurrency = 1, Arg_UserId}
 
     ValidateCurrencyParam(Arg_iCurrency, 0.0);
     ValidateUserParam(Arg_UserId, 0.0);
 
-    return Currency_Get(
+    return Currency_OpGet(
         get_param_currency(Arg_iCurrency),
         get_param(Arg_UserId)
     );
@@ -123,7 +145,7 @@ bool:@_Currency_Set() {
     ValidateCurrencyParam(Arg_iCurrency, false);
     ValidateUserParam(Arg_UserId, false);
 
-    return Currency_Set(
+    return Currency_OpSet(
         get_param_currency(Arg_iCurrency),
         get_param(Arg_UserId),
         get_param_f(Arg_fAmount)
@@ -133,10 +155,11 @@ bool:@_Currency_Set() {
 bool:@_Currency_IsEnough() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
 
+    ValidatePosNumParam(Arg_fAmount, false);
     ValidateCurrencyParam(Arg_iCurrency, false);
     ValidateUserParam(Arg_UserId, false);
 
-    return Currency_IsEnough(
+    return Currency_OpIsEnough(
         get_param_currency(Arg_iCurrency),
         get_param(Arg_UserId),
         get_param_f(Arg_fAmount)
@@ -146,10 +169,11 @@ bool:@_Currency_IsEnough() {
 bool:@_Currency_Credit() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
 
+    ValidatePosNumParam(Arg_fAmount, false);
     ValidateCurrencyParam(Arg_iCurrency, false);
     ValidateUserParam(Arg_UserId, false);
 
-    return Currency_Credit(
+    return Currency_OpCredit(
         get_param_currency(Arg_iCurrency),
         get_param(Arg_UserId),
         get_param_f(Arg_fAmount)
@@ -159,10 +183,11 @@ bool:@_Currency_Credit() {
 bool:@_Currency_Debit() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
 
+    ValidatePosNumParam(Arg_fAmount, false);
     ValidateCurrencyParam(Arg_iCurrency, false);
     ValidateUserParam(Arg_UserId, false);
 
-    return Currency_Debit(
+    return Currency_OpDebit(
         get_param_currency(Arg_iCurrency),
         get_param(Arg_UserId),
         get_param_f(Arg_fAmount)

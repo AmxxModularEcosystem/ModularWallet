@@ -165,6 +165,32 @@ native MWallet_Currency_AddListener(const T_Currency:iCurrency, const E_Currency
 native T_Currency:MWallet_Currency_Find(const sName[]);
 
 /**
+ * Получает название валюты.
+ *
+ * @param iCurrency Хендлер валюты.
+ * @param sOut      Буфер для записи ответа.
+ * @param iOutLen   Размер буфера.
+ *
+ * @return          Количество записанных в буфер ячеек.
+ */
+native MWallet_Currency_GetName(const T_Currency:iCurrency, sOut[], const iOutLen);
+
+/**
+ * Получает название валюты.
+ *
+ * @param iCurrency Хендлер валюты.
+ *
+ * @note            Inline-версия натива MWallet_Currency_GetName.
+ *
+ * @return          Название валюты.
+ */
+stock MWallet_Currency_iGetName(const T_Currency:iCurrency) {
+    new sName[MWALLET_CURRENCY_MAX_NAME_LEN];
+    MWallet_Currency_GetName(iCurrency, sName, charsmax(sName));
+    return sName;
+}
+
+/**
  * Создаёт строку с количеством валюты, в соответствии с правилами форматирования, указанными при регистрации валюты.
  *
  * @param iCurrency Хендлер валюты.

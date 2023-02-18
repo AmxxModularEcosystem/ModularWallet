@@ -58,35 +58,35 @@ public MWallet_OnInited() {
 @Cmd_Set(const UserId) {
     new Float:fAmount = read_argv_float(1);
     if (MWallet_Currency_Set(g_iUserSelectedCurrency[UserId], UserId, fAmount)) {
-        TestPrint(UserId, "Set %.0f", GetUserFormat(UserId, fAmount));
+        TestPrint(UserId, "Set %s", GetUserFormat(UserId, fAmount));
     } else {
-        TestPrint(UserId, "Can`t Set %.0f", GetUserFormat(UserId, fAmount));
+        TestPrint(UserId, "Can`t Set %s", GetUserFormat(UserId, fAmount));
     }
 }
 
 @Cmd_Credit(const UserId) {
     new Float:fAmount = read_argv_float(1);
     if (MWallet_Currency_Credit(g_iUserSelectedCurrency[UserId], UserId, fAmount)) {
-        TestPrint(UserId, "Credit %.0f", GetUserFormat(UserId, fAmount));
+        TestPrint(UserId, "Credit %s", GetUserFormat(UserId, fAmount));
     } else {
-        TestPrint(UserId, "Can`t Credit %.0f", GetUserFormat(UserId, fAmount));
+        TestPrint(UserId, "Can`t Credit %s", GetUserFormat(UserId, fAmount));
     }
 }
 
 @Cmd_Debit(const UserId) {
     new Float:fAmount = read_argv_float(1);
     if (MWallet_Currency_Debit(g_iUserSelectedCurrency[UserId], UserId, fAmount)) {
-        TestPrint(UserId, "Debit %.0f", GetUserFormat(UserId, fAmount));
+        TestPrint(UserId, "Debit %s", GetUserFormat(UserId, fAmount));
     } else {
-        TestPrint(UserId, "Can`t Debit %.0f", GetUserFormat(UserId, fAmount));
+        TestPrint(UserId, "Can`t Debit %s", GetUserFormat(UserId, fAmount));
     }
 }
 
 @Cmd_Enough(const UserId) {
     new Float:fAmount = read_argv_float(1);
     if (MWallet_Currency_IsEnough(g_iUserSelectedCurrency[UserId], UserId, fAmount)) {
-        TestPrint(UserId, "Enough %.0f", GetUserFormat(UserId, fAmount));
+        TestPrint(UserId, "Enough %s", GetUserFormat(UserId, fAmount));
     } else {
-        TestPrint(UserId, "Not Enough %.0f", GetUserFormat(UserId, fAmount));
+        TestPrint(UserId, "Not Enough %s", GetUserFormat(UserId, fAmount));
     }
 }
