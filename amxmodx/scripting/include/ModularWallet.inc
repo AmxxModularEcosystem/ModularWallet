@@ -301,7 +301,7 @@ native bool:MWallet_Currency_Debit(const T_Currency:iCurrency, const UserId, con
  *
  * @return          Хендлер найденной валюты или Invalid_Currency, если валюта не найдена.
  */
-stock T_Currrency:MWallet_JsonGetCurrency(const JSON:jValue, const bool:bFree = false) {
+stock T_Currency:MWallet_JsonGetCurrency(JSON:jValue, const bool:bFree = false) {
     new sCurrencyName[MWALLET_CURRENCY_MAX_NAME_LEN];
     json_get_string(jValue, sCurrencyName, charsmax(sCurrencyName));
 
@@ -321,7 +321,7 @@ stock T_Currrency:MWallet_JsonGetCurrency(const JSON:jValue, const bool:bFree = 
  *
  * @return          Хендлер найденной валюты или Invalid_Currency, если валюта не найдена.
  */
-stock T_Currrency:MWallet_JsonObjectGetCurrency(const JSON:jObject, const sKey[], const bool:bDotNot = false) {
+stock T_Currency:MWallet_JsonObjectGetCurrency(const JSON:jObject, const sKey[], const bool:bDotNot = false) {
     return MWallet_JsonGetCurrency(json_object_get_value(jObject, sKey, bDotNot), true);
 }
 
@@ -333,6 +333,6 @@ stock T_Currrency:MWallet_JsonObjectGetCurrency(const JSON:jObject, const sKey[]
  *
  * @return          Хендлер найденной валюты или Invalid_Currency, если валюта не найдена.
  */
-stock T_Currrency:MWallet_JsonArrayGetCurrency(const JSON:jArray, const Index) {
+stock T_Currency:MWallet_JsonArrayGetCurrency(const JSON:jArray, const Index) {
     return MWallet_JsonGetCurrency(json_array_get_value(jArray, Index), true);
 }
