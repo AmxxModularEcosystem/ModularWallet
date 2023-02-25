@@ -303,7 +303,7 @@ native bool:MWallet_Currency_Debit(const T_Currency:iCurrency, const UserId, con
  */
 stock T_Currrency:MWallet_JsonGetCurrency(const JSON:jValue, const bool:bFree = false) {
     new sCurrencyName[MWALLET_CURRENCY_MAX_NAME_LEN];
-    json_get_string(jValue, sCurrencyName, charsmax(sCurrencyNames));
+    json_get_string(jValue, sCurrencyName, charsmax(sCurrencyName));
 
     if (bFree) {
         json_free(jValue);
