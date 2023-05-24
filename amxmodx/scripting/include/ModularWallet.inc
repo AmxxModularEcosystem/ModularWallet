@@ -122,6 +122,15 @@ forward MWallet_OnInit();
 forward MWallet_OnInited();
 
 /**
+ * Вызывается после регистрации валюты.
+ *
+ * @param iCurrency Хендлер зарегистрированной валюты.
+ *
+ * @noreturn
+ */
+forward MWallet_OnCurrencyCreated(const T_Currency:iCurrency);
+
+/**
  * Инициализирует контроллер валют.
  *
  * @note    Нужен в случаях, когда нет уверенности в том, что контроллер уже инициализирован.

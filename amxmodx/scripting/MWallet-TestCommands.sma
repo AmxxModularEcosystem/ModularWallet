@@ -39,6 +39,10 @@ public MWallet_OnInited() {
     register_clcmd("mwallet_test_enough", "@Cmd_Enough");
 }
 
+public MWallet_OnCurrencyCreated(const T_Currency:iCurrency) {
+    server_print("[TEST] MWallet_Currency_OnCreated(%s)", MWallet_Currency_iGetName(iCurrency));
+}
+
 @Cmd_List(const UserId) {
     new Array:aCurrencies = MWallet_Currency_All();
 

@@ -35,6 +35,8 @@ PluginInit() {
 
 ForwardsInit() {
     Forwards_Init(MWALLET_PREFIX);
+
+    Forwards_Reg("CurrencyCreated", ET_IGNORE, FP_CELL);
 }
 
 #include "MWallet/Core/Natives"

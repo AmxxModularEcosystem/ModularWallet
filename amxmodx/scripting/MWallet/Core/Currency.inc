@@ -56,7 +56,10 @@ T_Currency:Currency_Create(const sName[], const sFormat[] = "") {
     copy(Currency[Currency_FormatRule], charsmax(Currency[Currency_FormatRule]), sFormat[0] ? sFormat : MWALLET_CURRENCY_DEFAULT_FORMAT);
     Currency[Currency_Events] = Events_Init(E_CurrencyEvents);
 
-    return T_Currency:ArrayMapPushArray(gCurrencies, Currency, Currency[Currency_Name]);
+    new T_Currency:iCurrency = T_Currency:ArrayMapPushArray(gCurrencies, Currency, Currency[Currency_Name]);
+    Forwards_CallP("CurrencyCreated", iCurrency);
+
+    return iCurrency;
 }
 
 T_Currency:Currency_Find(const sName[]) {
