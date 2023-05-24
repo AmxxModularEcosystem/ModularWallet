@@ -17,20 +17,22 @@ enum _:S_Currency {
     T_Events:Currency_Events,
 }
 
-new ArrayMap(gCurrencies);
+// Как-то добавить названия валют для отображения
 
-#define Currency_Call(%1,%2,[%3]) CompositeMacros( \
+static ArrayMap(gCurrencies);
+
+#define Currency__Call(%1,%2,[%3]) CompositeMacros( \
     Events_SetReturnedValue(0); \
     Events_CallP(%1[Currency_Events], %2, [%3]); \
 )
 
-#define Currency_CallOrDefault(%1,%2,[%3]) \
+#define Currency__CallOrDefault(%1,%2,[%3]) \
     if (Events_HasListeners(%1[Currency_Events], %2)) { \
-        Currency_Call(%1, %2, [%3]); \
+        Currency__Call(%1, %2, [%3]); \
     } else 
 
-#define Currency_CallOrError(%1,%2,[%3]) CompositeMacros( \
-    Currency_CallOrDefault(%1, %2, [%3]) { \
+#define Currency__CallOrError(%1,%2,[%3]) CompositeMacros( \
+    Currency__CallOrDefault(%1, %2, [%3]) { \
         log_error(0, "Currency `%s` must implements GET and SET methods.", %1[Currency_Name]); \
     } \
 )
@@ -109,7 +111,7 @@ Float:Currency_OpGet(const T_Currency:iCurrency, const UserId) {
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
-    Currency_CallOrError(Currency, Currency_OnGet, [UserId]);
+    Currency__CallOrError(Currency, Currency_OnGet, [UserId]);
 
     return Events_GetReturnedValue();
 }
@@ -118,7 +120,7 @@ bool:Currency_OpSet(const T_Currency:iCurrency, const UserId, const Float:fAmoun
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
-    Currency_CallOrError(Currency, Currency_OnSet, [UserId, fAmount]);
+    Currency__CallOrError(Currency, Currency_OnSet, [UserId, fAmount]);
 
     return Events_GetReturnedValue();
 }
@@ -127,7 +129,7 @@ bool:Currency_OpIsEnough(const T_Currency:iCurrency, const UserId, const Float:f
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
-    Currency_CallOrDefault(Currency, Currency_OnIsEnough, [UserId, fAmount]) {
+    Currency__CallOrDefault(Currency, Currency_OnIsEnough, [UserId, fAmount]) {
         return Currency_OpGet(iCurrency, UserId) >= fAmount;
     }
 
@@ -138,7 +140,7 @@ bool:Currency_OpCredit(const T_Currency:iCurrency, const UserId, const Float:fAm
     new Currency[S_Currency]; 
     Currency_GetById(iCurrency, Currency);
 
-    Currency_CallOrDefault(Currency, Currency_OnCredit, [UserId, fAmount]) {
+    Currency__CallOrDefault(Currency, Currency_OnCredit, [UserId, fAmount]) {
         if (!Currency_OpIsEnough(iCurrency, UserId, fAmount)) {
             return false;
         } else {
@@ -153,7 +155,7 @@ bool:Currency_OpDebit(const T_Currency:iCurrency, const UserId, const Float:fAmo
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
-    Currency_CallOrDefault(Currency, Currency_OnDebit, [UserId, fAmount]) {
+    Currency__CallOrDefault(Currency, Currency_OnDebit, [UserId, fAmount]) {
         return Currency_OpSet(iCurrency, UserId, Currency_OpGet(iCurrency, UserId) + fAmount);
     }
 

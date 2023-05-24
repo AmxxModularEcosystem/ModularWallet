@@ -30,12 +30,29 @@ new T_Currency:g_iUserSelectedCurrency[MAX_PLAYERS + 1] = {Invalid_Currency, ...
 public MWallet_OnInited() {
     RegisterPluginByVars();
     
+    register_clcmd("mwallet_test_list", "@Cmd_List");
     register_clcmd("mwallet_test_select", "@Cmd_Select");
     register_clcmd("mwallet_test_get", "@Cmd_Get");
     register_clcmd("mwallet_test_set", "@Cmd_Set");
     register_clcmd("mwallet_test_credit", "@Cmd_Credit");
     register_clcmd("mwallet_test_debit", "@Cmd_Debit");
     register_clcmd("mwallet_test_enough", "@Cmd_Enough");
+}
+
+@Cmd_List(const UserId) {
+    new Array:aCurrencies = MWallet_Currency_All();
+
+    client_print(UserId, print_console, "Registered currencies:");
+    for (new i = 0, ii = ArraySize(aCurrencies); i < ii; i++) {
+        new T_Currency:iCurrency = ArrayGetCell(aCurrencies, i);
+        client_print(UserId, print_console, "    - #%d %s (%s)", iCurrency, MWallet_Currency_iGetName(iCurrency), MWallet_Currency_Fmt(iCurrency, 123.0));
+    }
+    client_print(UserId, print_console, "%d total.", ArraySize(aCurrencies));
+    client_print(UserId, print_console, "");
+
+    ArrayDestroy(aCurrencies);
+
+    return PLUGIN_HANDLED;
 }
 
 @Cmd_Select(const UserId) {
@@ -49,10 +66,14 @@ public MWallet_OnInited() {
     } else {
         client_print(UserId, print_console, "[MWallet-Test] Select `%s` (#%d) currency.", sCurrencyName, g_iUserSelectedCurrency[UserId]);
     }
+
+    return PLUGIN_HANDLED;
 }
 
 @Cmd_Get(const UserId) {
     TestPrint(UserId, "Get");
+
+    return PLUGIN_HANDLED;
 }
 
 @Cmd_Set(const UserId) {
@@ -62,6 +83,8 @@ public MWallet_OnInited() {
     } else {
         TestPrint(UserId, "Can`t Set %s", GetUserFormat(UserId, fAmount));
     }
+
+    return PLUGIN_HANDLED;
 }
 
 @Cmd_Credit(const UserId) {
@@ -71,6 +94,8 @@ public MWallet_OnInited() {
     } else {
         TestPrint(UserId, "Can`t Credit %s", GetUserFormat(UserId, fAmount));
     }
+
+    return PLUGIN_HANDLED;
 }
 
 @Cmd_Debit(const UserId) {
@@ -80,6 +105,8 @@ public MWallet_OnInited() {
     } else {
         TestPrint(UserId, "Can`t Debit %s", GetUserFormat(UserId, fAmount));
     }
+
+    return PLUGIN_HANDLED;
 }
 
 @Cmd_Enough(const UserId) {
@@ -89,4 +116,6 @@ public MWallet_OnInited() {
     } else {
         TestPrint(UserId, "Not Enough %s", GetUserFormat(UserId, fAmount));
     }
+
+    return PLUGIN_HANDLED;
 }

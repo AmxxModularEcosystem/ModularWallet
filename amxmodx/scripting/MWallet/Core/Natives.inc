@@ -41,11 +41,12 @@ public plugin_natives() {
 
     Natives_Reg("Init");
     Natives_Reg("Currency_Create");
-    Natives_Reg("Currency_AddListener");
+    Natives_Reg("Currency_Find");
+    Natives_Reg("Currency_All");
 
+    Natives_Reg("Currency_AddListener");
     Natives_Reg("Currency_GetName");
     Natives_Reg("Currency_Format");
-    Natives_Reg("Currency_Find");
 
     Natives_Reg("Currency_Get");
     Natives_Reg("Currency_Set");
@@ -68,6 +69,20 @@ T_Currency:@_Currency_Create() {
     get_string(Arg_sFormat, sFormat, charsmax(sFormat));
 
     return Currency_Create(sName, sFormat);
+}
+
+Array:@_Currency_All() {
+    static Array:aCurrencies;
+
+    // Пока валюту нельзя редачить, пойдёт
+    if (aCurrencies == Invalid_Array || ArraySize(aCurrencies) != Currency_Count()) {
+        aCurrencies = ArrayCreate(1, Currency_Count());
+        for (new i = 0, ii = Currency_Count(); i < ii; i++) {
+            ArrayPushCell(aCurrencies, i);
+        }
+    }
+    
+    return ArrayClone(aCurrencies);
 }
 
 @_Currency_AddListener(const iPlugin) {
@@ -109,7 +124,6 @@ T_Currency:@_Currency_Create() {
 
     new sFmt[MWALLET_CURRENCY_MAX_FORMAT_OUT_LEN];
     Currency_Format(iCurrency, fAmount, sFmt, charsmax(sFmt));
-    Dbg_Log("@_Currency_Format(%d, %.0f): sFmt = %s", iCurrency, fAmount, sFmt);
 
     return set_string(Arg_sOut, sFmt, iOutLen);
 }

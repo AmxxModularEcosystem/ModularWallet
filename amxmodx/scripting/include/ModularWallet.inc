@@ -12,6 +12,7 @@ stock const MWALLET_PREFIX[] = "MWallet";
 
 stock const MWALLET_CURRENCY_DEFAULT_FORMAT[] = "%.0f";
 #define MWALLET_CURRENCY_MAX_NAME_LEN 32
+// #define MWALLET_CURRENCY_MAX_TITLE_LEN 64
 #define MWALLET_CURRENCY_MAX_FORMAT_LEN 16
 #define MWALLET_CURRENCY_MAX_FORMAT_OUT_LEN 32
 #define MWALLET_CALLBACK_MAX_LEN 64
@@ -141,6 +142,16 @@ native MWallet_Init();
  * @return          Хендлер созданной валюты.
  */
 native T_Currency:MWallet_Currency_Create(const sName[], const sFormat[] = "");
+
+/**
+ * Возвращает массив зарегистрированных валют.
+ *
+ * @note            Рекомендуется вызывать не раньше срабатывания форварда MWallet_OnInited.
+ * @note            Возвращаемый этим нативом массив нужно очищать после использования (ArrayDestroy).
+ *
+ * @return          Хендлер динамического массива с хендлерами валют.
+ */
+native Array:MWallet_Currency_All();
 
 /**
  * Регистрирует обработчик указанного события.
