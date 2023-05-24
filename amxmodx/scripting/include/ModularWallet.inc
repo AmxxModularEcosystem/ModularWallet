@@ -6,7 +6,7 @@
 #include <amxmodx>
 #include <json>
 
-#define _MWALLET_VERSION "1.0.0-beta.1"
+#define _MWALLET_VERSION "1.0.0"
 stock const MWALLET_VERSION[] = _MWALLET_VERSION;
 stock const MWALLET_PREFIX[] = "MWallet";
 
