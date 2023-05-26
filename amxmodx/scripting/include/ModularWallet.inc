@@ -25,7 +25,7 @@ enum T_Currency { Invalid_Currency = -1 }
         IsEnough:
             return Get(UserId) >= fAmount;
         Credit:
-            if (!IsEnought(UserId, fAmount)) {
+            if (!IsEnough(UserId, fAmount)) {
                 return false;
             }
             Set(UserId, Get(UserId) - fAmount);
@@ -141,6 +141,16 @@ forward MWallet_OnCurrencyCreated(const T_Currency:iCurrency);
 native MWallet_Init();
 
 /**
+ * Возвращает массив зарегистрированных валют.
+ *
+ * @note            Рекомендуется вызывать не раньше срабатывания форварда MWallet_OnInited.
+ * @note            Возвращаемый этим нативом массив нужно очищать после использования (ArrayDestroy).
+ *
+ * @return          Хендлер динамического массива с хендлерами валют.
+ */
+native Array:MWallet_Currency_All();
+
+/**
  * Создаёт новую валюту с указанным названием.
  *
  * @param sName     Название валюты.
@@ -151,16 +161,6 @@ native MWallet_Init();
  * @return          Хендлер созданной валюты.
  */
 native T_Currency:MWallet_Currency_Create(const sName[], const sFormat[] = "");
-
-/**
- * Возвращает массив зарегистрированных валют.
- *
- * @note            Рекомендуется вызывать не раньше срабатывания форварда MWallet_OnInited.
- * @note            Возвращаемый этим нативом массив нужно очищать после использования (ArrayDestroy).
- *
- * @return          Хендлер динамического массива с хендлерами валют.
- */
-native Array:MWallet_Currency_All();
 
 /**
  * Регистрирует обработчик указанного события.
