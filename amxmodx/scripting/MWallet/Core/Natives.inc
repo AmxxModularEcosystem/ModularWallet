@@ -47,6 +47,7 @@ public plugin_natives() {
     Natives_Reg("Currency_AddListener");
     Natives_Reg("Currency_GetName");
     Natives_Reg("Currency_Format");
+    Natives_Reg("Currency_OverrideFormat");
 
     Natives_Reg("Currency_Get");
     Natives_Reg("Currency_Set");
@@ -126,6 +127,18 @@ Array:@_Currency_All() {
     Currency_Format(iCurrency, fAmount, sFmt, charsmax(sFmt));
 
     return set_string(Arg_sOut, sFmt, iOutLen);
+}
+
+@_Currency_OverrideFormat() {
+    enum {Arg_sCurrencyName = 1, Arg_sFormat}
+
+    new sCurrencyName[MWALLET_CURRENCY_MAX_NAME_LEN];
+    get_string(Arg_sCurrencyName, sCurrencyName, charsmax(sCurrencyName));
+
+    new sFormat[MWALLET_CURRENCY_MAX_FORMAT_LEN];
+    get_string(Arg_sFormat, sFormat, charsmax(sFormat));
+
+    return Currency_PutFormatOverride(sCurrencyName, sFormat);
 }
 
 T_Currency:@_Currency_Find() {

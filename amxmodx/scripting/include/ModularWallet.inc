@@ -239,6 +239,18 @@ stock MWallet_Currency_Fmt(const T_Currency:iCurrency, const Float:fAmount) {
 }
 
 /**
+ * Переопределяет правило форматирования для указанной валюты.
+ *
+ * @param sCurrencyName Название валюты.
+ * @param sFormat       Правило форматирования для валюты. Например: "$%.0f".
+ *
+ * @note Валюта с указанным названием не обязана существовать.
+ *
+ * @noreturn
+ */
+native MWallet_Currency_OverrideFormat(const sCurrencyName[], const sFormat[]);
+
+/**
  * Получает актуальное количество валюты.
  *
  * @param iCurrency Хендлер валюты.

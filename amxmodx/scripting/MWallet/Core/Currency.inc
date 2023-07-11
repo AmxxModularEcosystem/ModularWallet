@@ -20,6 +20,7 @@ enum _:S_Currency {
 // Как-то добавить названия валют для отображения
 
 static ArrayMap(gCurrencies);
+static Trie:g_tFormatOverrides = Invalid_Trie;
 
 #define Currency__Call(%1,%2,[%3]) CompositeMacros( \
     Events_SetReturnedValue(0); \
@@ -104,12 +105,26 @@ bool:Currency_AddListener(
 }
 
 Currency_Format(const T_Currency:iCurrency, const Float:fAmount, sOut[], const iOutLen) {
-    new Currency[S_Currency];
+    static Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
 
-    // TODO: Конфиг для переопределения форматирования
+    static sFormatOverride[MWALLET_CURRENCY_MAX_FORMAT_LEN];
+    if (
+        g_tFormatOverrides != Invalid_Trie
+        && TrieGetString(g_tFormatOverrides, Currency[Currency_Name], sFormatOverride, charsmax(sFormatOverride))
+    ) {
+        return formatex(sOut, iOutLen, sFormatOverride, fAmount);
+    }
     
     return formatex(sOut, iOutLen, Currency[Currency_FormatRule], fAmount);
+}
+
+Currency_PutFormatOverride(const sCurrencyName[], const sFormat[]) {
+    if (g_tFormatOverrides == Invalid_Trie) {
+        g_tFormatOverrides = TrieCreate();
+    }
+
+    return TrieSetString(g_tFormatOverrides, sCurrencyName, sFormat);
 }
 
 Float:Currency_OpGet(const T_Currency:iCurrency, const UserId) {
