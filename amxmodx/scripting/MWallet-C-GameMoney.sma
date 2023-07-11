@@ -10,7 +10,7 @@
 public stock const PluginName[] = "[MWallet-C] Game Money";
 public stock const PluginVersion[] = _MWALLET_VERSION;
 public stock const PluginAuthor[] = "ArKaNeMaN";
-public stock const PluginURL[] = "t.me/arkaneman";
+public stock const PluginURL[] = "t.me/arkanaplugins";
 public stock const PluginDescription[] = "Game money currency for Modular Wallet";
 
 public MWallet_OnInit() {

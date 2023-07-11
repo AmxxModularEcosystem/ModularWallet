@@ -106,6 +106,8 @@ bool:Currency_AddListener(
 Currency_Format(const T_Currency:iCurrency, const Float:fAmount, sOut[], const iOutLen) {
     new Currency[S_Currency];
     Currency_GetById(iCurrency, Currency);
+
+    // TODO: Конфиг для переопределения форматирования
     
     return formatex(sOut, iOutLen, Currency[Currency_FormatRule], fAmount);
 }
