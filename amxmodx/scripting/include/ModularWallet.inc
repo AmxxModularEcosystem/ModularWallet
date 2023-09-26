@@ -368,3 +368,30 @@ stock T_Currency:MWallet_JsonObjectGetCurrency(const JSON:jObject, const sKey[],
 stock T_Currency:MWallet_JsonArrayGetCurrency(const JSON:jArray, const Index) {
     return MWallet_JsonGetCurrency(json_array_get_value(jArray, Index), true);
 }
+
+/**
+ * Получение форматированной строки с текущим балансом игрока.
+ *
+ * @param iCurrency Хендлер валюты.
+ * @param UserId    Индекс игрока.
+ * @param sOut      Буфер для записи форматированной строки.
+ * @param iOutLen   Размер буфера.
+ *
+ * @return          Количество записанных в буфер ячеек.
+ */
+stock MWallet_Currency_AccFormat(const T_Currency:iCurrency, const UserId, sOut[], const iOutLen) {
+    return MWallet_Currency_Format(iCurrency, MWallet_Currency_Get(iCurrency, UserId), sOut, iOutLen);
+}
+
+
+/**
+ * Получение форматированной строки с текущим балансом игрока.
+ *
+ * @param iCurrency Хендлер валюты.
+ * @param UserId    Индекс игрока.
+ *
+ * @return          Форматированная строки.
+ */
+stock MWallet_Currency_AccFmt(const T_Currency:iCurrency, const UserId) {
+    return MWallet_Currency_Fmt(iCurrency, MWallet_Currency_Get(iCurrency, UserId));
+}
