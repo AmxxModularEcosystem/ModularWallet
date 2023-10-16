@@ -393,5 +393,8 @@ stock MWallet_Currency_AccFormat(const T_Currency:iCurrency, const UserId, sOut[
  * @return          Форматированная строки.
  */
 stock MWallet_Currency_AccFmt(const T_Currency:iCurrency, const UserId) {
-    return MWallet_Currency_Fmt(iCurrency, MWallet_Currency_Get(iCurrency, UserId));
+    new sFormat[MWALLET_CURRENCY_MAX_FORMAT_OUT_LEN];
+    MWallet_Currency_AccFormat(iCurrency, UserId, sFormat, charsmax(sFormat));
+
+    return sFormat;
 }
