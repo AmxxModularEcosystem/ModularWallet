@@ -14,8 +14,9 @@ stock const MWALLET_CURRENCY_DEFAULT_FORMAT[] = "%.0f";
 #define MWALLET_CURRENCY_MAX_NAME_LEN 32
 // #define MWALLET_CURRENCY_MAX_TITLE_LEN 64
 #define MWALLET_CURRENCY_MAX_FORMAT_LEN 16
-#define MWALLET_CURRENCY_MAX_FORMAT_OUT_LEN 32
+#define MWALLET_CURRENCY_MAX_FORMAT_OUT_LEN 64
 #define MWALLET_CALLBACK_MAX_LEN 64
+#define MWALLET_AMOUNT_STR_AMOUNT_MAX_LEN 32
 
 enum T_Currency { Invalid_Currency = -1 }
 
@@ -383,7 +384,6 @@ stock MWallet_Currency_AccFormat(const T_Currency:iCurrency, const UserId, sOut[
     return MWallet_Currency_Format(iCurrency, MWallet_Currency_Get(iCurrency, UserId), sOut, iOutLen);
 }
 
-
 /**
  * Получение форматированной строки с текущим балансом игрока.
  *
@@ -396,5 +396,106 @@ stock MWallet_Currency_AccFmt(const T_Currency:iCurrency, const UserId) {
     new sFormat[MWALLET_CURRENCY_MAX_FORMAT_OUT_LEN];
     MWallet_Currency_AccFormat(iCurrency, UserId, sFormat, charsmax(sFormat));
 
+    return sFormat;
+}
+
+/**
+ * TODO: docs
+ */
+stock bool:MWallet_AmountStr_Parse(const sAmountString[], &T_Currency:iCurrency = Invalid_Currency, &Float:fAmount = 0.0) {
+    static sCurrencyName[MWALLET_CURRENCY_MAX_NAME_LEN], sAmountStr[MWALLET_AMOUNT_STR_AMOUNT_MAX_LEN];
+    split(sAmountString, sCurrencyName, charsmax(sCurrencyName), sAmountStr, charsmax(sAmountStr), ":");
+
+    iCurrency = MWallet_Currency_Find(sCurrencyName);
+    if (iCurrency == Invalid_Currency) {
+        return false;
+    }
+    fAmount = str_to_float(sAmountStr);
+
+    return true;
+}
+
+stock bool:MWallet_AmountStr_Validate(const sAmountString[]) {
+    return MWallet_AmountStr_Parse(sAmountString);
+}
+
+stock Float:MWallet_AmountStr_Get(const UserId, const sAmountString[]) {
+    new T_Currency:iCurrency;
+    if (!MWallet_AmountStr_Parse(sAmountString, iCurrency)) {
+        return 0.0;
+    }
+
+    return MWallet_Currency_Get(iCurrency, UserId);
+}
+
+stock bool:MWallet_AmountStr_Set(const UserId, const sAmountString[]) {
+    new T_Currency:iCurrency, Float:fAmount;
+    if (!MWallet_AmountStr_Parse(sAmountString, iCurrency, fAmount)) {
+        return false;
+    }
+
+    return MWallet_Currency_Set(iCurrency, UserId, fAmount);
+}
+
+stock bool:MWallet_AmountStr_IsEnough(const UserId, const sAmountString[]) {
+    new T_Currency:iCurrency, Float:fAmount;
+    if (!MWallet_AmountStr_Parse(sAmountString, iCurrency, fAmount)) {
+        return false;
+    }
+
+    return MWallet_Currency_IsEnough(iCurrency, UserId, fAmount);
+}
+
+stock bool:MWallet_AmountStr_Credit(const UserId, const sAmountString[]) {
+    new T_Currency:iCurrency, Float:fAmount;
+    if (!MWallet_AmountStr_Parse(sAmountString, iCurrency, fAmount)) {
+        return false;
+    }
+
+    return MWallet_Currency_Credit(iCurrency, UserId, fAmount);
+}
+
+stock bool:MWallet_AmountStr_Debit(const UserId, const sAmountString[]) {
+    new T_Currency:iCurrency, Float:fAmount;
+    if (!MWallet_AmountStr_Parse(sAmountString, iCurrency, fAmount)) {
+        return false;
+    }
+
+    return MWallet_Currency_Debit(iCurrency, UserId, fAmount);
+}
+
+stock MWallet_AmountStr_Format(const sAmountString[], sOut[], const iOutLen) {
+    new T_Currency:iCurrency, Float:fAmount;
+    if (!MWallet_AmountStr_Parse(sAmountString, iCurrency, fAmount)) {
+        return 0;
+    }
+
+    return MWallet_Currency_Format(iCurrency, fAmount, sOut, iOutLen);
+}
+
+stock MWallet_AmountStr_Fmt(const sAmountString[]) {
+    new T_Currency:iCurrency, Float:fAmount;
+
+    new sFormat[MWALLET_CURRENCY_MAX_FORMAT_OUT_LEN] = "";
+    if (MWallet_AmountStr_Parse(sAmountString, iCurrency, fAmount)) {
+        MWallet_AmountStr_Format(iCurrency, sAmountString, sFormat, charsmax(sFormat));
+    }
+    
+    return sFormat;
+}
+
+stock MWallet_AmountStr_AccFormat(const UserId, const sAmountString[], sOut[], const iOutLen) {
+    new T_Currency:iCurrency;
+    if (!MWallet_AmountStr_Parse(sAmountString, iCurrency)) {
+        return 0;
+    }
+
+    return MWallet_Currency_Format(iCurrency, MWallet_Currency_Get(iCurrency, UserId), sOut, iOutLen);
+}
+
+stock MWallet_AmountStr_AccFmt(const UserId, const sAmountString[]) {
+    new sFormat[MWALLET_CURRENCY_MAX_FORMAT_OUT_LEN] = "";
+    MWallet_AmountStr_AccFormat(UserId, sAmountString, sFormat, charsmax(sFormat));
+    
     return sFormat;
 }
