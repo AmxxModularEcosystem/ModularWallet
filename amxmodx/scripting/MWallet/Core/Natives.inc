@@ -12,6 +12,13 @@ T_Currency:get_param_currency(const iArg) {
     return T_Currency:get_param(iArg);
 }
 
+#define ValidateCurrenciesInited(%1) CompositeMacros( \
+    if (!Currency_IsInited()) { \
+        log_error(0, "Currencies not inited. Call `MWallet_Init` native first."); \
+        return %1; \
+    } \
+)
+
 #define ValidateCurrencyParam(%1,%2) CompositeMacros( \
     new T_Currency:__iCurrency = get_param_currency(%1); \
     if (__iCurrency <= Invalid_Currency || _:__iCurrency >= Currency_Count()) { \
@@ -63,6 +70,8 @@ public plugin_natives() {
 T_Currency:@_Currency_Create() {
     enum {Arg_sName = 1, Arg_sFormat}
 
+    ValidateCurrenciesInited(Invalid_Currency);
+
     new sName[MWALLET_CURRENCY_MAX_NAME_LEN];
     get_string(Arg_sName, sName, charsmax(sName));
 
@@ -74,6 +83,8 @@ T_Currency:@_Currency_Create() {
 
 Array:@_Currency_All() {
     static Array:aCurrencies;
+
+    ValidateCurrenciesInited(Invalid_Array);
 
     // Пока валюту нельзя редачить, пойдёт
     if (aCurrencies == Invalid_Array || ArraySize(aCurrencies) != Currency_Count()) {
@@ -89,6 +100,7 @@ Array:@_Currency_All() {
 @_Currency_AddListener(const iPlugin) {
     enum {Arg_iCurrency = 1, Arg_iEvent, Arg_sCallback}
 
+    ValidateCurrenciesInited( );
     ValidateCurrencyParam(Arg_iCurrency, );
 
     new T_Currency:iCurrency = T_Currency:get_param(Arg_iCurrency);
@@ -103,6 +115,7 @@ Array:@_Currency_All() {
 @_Currency_GetName() {
     enum {Arg_iCurrency = 1, Arg_sOut, Arg_iOutLen}
 
+    ValidateCurrenciesInited(0);
     ValidateCurrencyParam(Arg_iCurrency, 0);
 
     new T_Currency:iCurrency = T_Currency:get_param(Arg_iCurrency);
@@ -117,6 +130,7 @@ Array:@_Currency_All() {
 @_Currency_Format() {
     enum {Arg_iCurrency = 1, Arg_fAmount, Arg_sOut, Arg_iOutLen}
 
+    ValidateCurrenciesInited(0);
     ValidateCurrencyParam(Arg_iCurrency, 0);
 
     new T_Currency:iCurrency = T_Currency:get_param(Arg_iCurrency);
@@ -132,6 +146,8 @@ Array:@_Currency_All() {
 @_Currency_OverrideFormat() {
     enum {Arg_sCurrencyName = 1, Arg_sFormat}
 
+    ValidateCurrenciesInited(0);
+
     new sCurrencyName[MWALLET_CURRENCY_MAX_NAME_LEN];
     get_string(Arg_sCurrencyName, sCurrencyName, charsmax(sCurrencyName));
 
@@ -143,6 +159,8 @@ Array:@_Currency_All() {
 
 T_Currency:@_Currency_Find() {
     enum {Arg_sName = 1, Arg_bOrError}
+
+    ValidateCurrenciesInited(Invalid_Currency);
 
     new sName[MWALLET_CURRENCY_MAX_NAME_LEN];
     get_string(Arg_sName, sName, charsmax(sName));
@@ -157,6 +175,7 @@ T_Currency:@_Currency_Find() {
 Float:@_Currency_Get() {
     enum {Arg_iCurrency = 1, Arg_UserId}
 
+    ValidateCurrenciesInited(0.0);
     ValidateCurrencyParam(Arg_iCurrency, 0.0);
     ValidateUserParam(Arg_UserId, 0.0);
 
@@ -169,6 +188,7 @@ Float:@_Currency_Get() {
 bool:@_Currency_Set() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
 
+    ValidateCurrenciesInited(false);
     ValidateCurrencyParam(Arg_iCurrency, false);
     ValidateUserParam(Arg_UserId, false);
 
@@ -182,6 +202,7 @@ bool:@_Currency_Set() {
 bool:@_Currency_IsEnough() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
 
+    ValidateCurrenciesInited(false);
     ValidatePosNumParam(Arg_fAmount, false);
     ValidateCurrencyParam(Arg_iCurrency, false);
     ValidateUserParam(Arg_UserId, false);
@@ -196,6 +217,7 @@ bool:@_Currency_IsEnough() {
 bool:@_Currency_Credit() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
 
+    ValidateCurrenciesInited(false);
     ValidatePosNumParam(Arg_fAmount, false);
     ValidateCurrencyParam(Arg_iCurrency, false);
     ValidateUserParam(Arg_UserId, false);
@@ -210,6 +232,7 @@ bool:@_Currency_Credit() {
 bool:@_Currency_Debit() {
     enum {Arg_iCurrency = 1, Arg_UserId, Arg_fAmount}
 
+    ValidateCurrenciesInited(false);
     ValidatePosNumParam(Arg_fAmount, false);
     ValidateCurrencyParam(Arg_iCurrency, false);
     ValidateUserParam(Arg_UserId, false);

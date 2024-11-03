@@ -38,8 +38,14 @@ static Trie:g_tFormatOverrides = Invalid_Trie;
     } \
 )
 
+bool:Currency_IsInited() {
+    return ArrayMapCreated(gCurrencies);
+}
+
 Currency_Init() {
-    InitArrayMap(gCurrencies, S_Currency, 4);
+    if (!Currency_IsInited()) {
+        InitArrayMap(gCurrencies, S_Currency, 4);
+    }
 }
 
 Currency_GetById(const T_Currency:iCurrency, Currency[S_Currency]) {
@@ -59,7 +65,8 @@ T_Currency:Currency_Create(const sName[], const sFormat[] = "") {
 
     new T_Currency:iCurrency = T_Currency:ArrayMapPushArray(gCurrencies, Currency, Currency[Currency_Name]);
     Forwards_CallP("CurrencyCreated", iCurrency);
-
+    
+    Dbg_Log("Currency_Create('%s', ?) return %d", sName, iCurrency);
     return iCurrency;
 }
 

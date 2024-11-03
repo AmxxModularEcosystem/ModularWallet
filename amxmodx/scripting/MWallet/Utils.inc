@@ -9,8 +9,9 @@ stock const __INT_TEMPLATE_STR[] = "%d";
 stock const __CLANG_TEMPLATE_STR[] = "%L";
 stock const __USER_NAME_TEMPLATE_STR[] = "%n";
 
+stock bool:__CompositeMacros__alwaysFalse = false;
 #define CompositeMacros(%1) \
-    do { %1 } while(is_linux_server() == 0xDEADBEEF)
+    do { %1 } while(__CompositeMacros__alwaysFalse)
 
 #define IntToStr(%1) \
     fmt(__INT_TEMPLATE_STR, %1)
@@ -23,39 +24,6 @@ stock const __USER_NAME_TEMPLATE_STR[] = "%n";
         IsUserIdValid(%1) \
         && is_user_connected(%1) \
     )
-
-#define IsUserAlive(%1) \
-    ( \
-        IsUserIdValid(%1) \
-        && is_user_alive(%1) \
-    )
-
-stock __utils_ChatPrint_LayoutKey[64] = "MSG_LAYOUT";
-
-#define ChatPrint_Init(%1) \
-    copy(__utils_ChatPrint_LayoutKey, charsmax(__utils_ChatPrint_LayoutKey), %1);
-
-#define ChatPrint(%1,%2) \
-    client_print_color(%1, print_team_default, __CLANG_TEMPLATE_STR, IsUserIdValid(%1) ? %1 : -1, __utils_ChatPrint_LayoutKey, fmt(%2))
-
-#define ChatPrintL(%1,%2) \
-    ChatPrint(%1, __CLANG_TEMPLATE_STR, %1, %2)
-
-stock __CMD_NULL_ARG = 0;
-stock CMD_INIT_PARAMS() {
-    __CMD_NULL_ARG = 0;
-    static Cmd[32];
-    read_argv(__CMD_NULL_ARG, Cmd, charsmax(Cmd));
-    if (equali(Cmd, "say", 3)) {
-        __CMD_NULL_ARG++;
-    }
-}
-
-#define CMD_ARG(%1) \
-    (__CMD_NULL_ARG + %1)
-
-#define CMD_ARG_NUM() \
-    (read_argc() - __CMD_NULL_ARG - 1)
 
 #define BitSet(%1,%2) \
     %1 |= (1 << (%2 - 1))
